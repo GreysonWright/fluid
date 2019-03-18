@@ -1,9 +1,9 @@
 const Injector = require('../utils/Injector');
 
 const Commands = {
-  inject: (sourceContents, tokens) => {
-    const injecteeFilePath = tokens[2];
-    var injectedSourceContents = Injector.inject(sourceContents, injecteeFilePath);
+  inject: (sourceContents, fluidFunction) => {
+    const injecteeFilePath = fluidFunction.parameters[0];
+    const injectedSourceContents = Injector.inject(sourceContents, injecteeFilePath);
     return injectedSourceContents;
   },
   override: (sourceContents, tokens) => {

@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const FluidFile = require('../utils/FluidFile');
 
 const fluidFileTypes = ['.fjson', '.fjs', '.fscss', '.fcss', '.fliquid'];
 
@@ -15,16 +16,17 @@ const isFluidFile = (fileName) => {
 const FileFinder = {
   getAllFluidFiles: (directory) => {
     let files = fs.readdirSync(directory);
-    const fluidFiles = [];
+    const fluidFiles = new Map();
     while(files.length > 0) {
       const file = files.shift();
       const fullFilePath = path.join(directory, file);
       const fileStatus = fs.lstatSync(fullFilePath);
       if (isFluidFile(fullFilePath)) {
-        fluidFiles.push(fullFilePath);
+        const fluidFile = new FluidFile(file);
+        fluidFiles.set(fullFilePath, fluidFile);
       } else if (fileStatus.isDirectory()) {
         const directoryContents = fs.readdirSync(fullFilePath);
-        const scopedDirectoryContents = directoryContents.map( function(subFile) {
+        const scopedDirectoryContents = directoryContents.map(function(subFile) {
           return path.join(file, subFile);
         });
         files = files.concat(scopedDirectoryContents);

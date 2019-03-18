@@ -1,9 +1,8 @@
 const Commands = require('./Commands');
 
 const Interpreter = {
-  interpret: (tokens) => {
-    const commandText = tokens[1];
-    switch(commandText) {
+  interpret: (fluidFunction) => {
+    switch(fluidFunction.function) {
       case 'inject':
         return Commands.inject;
       case 'override':
