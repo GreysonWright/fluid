@@ -1,7 +1,7 @@
 const FluidFunction = require('../utils/FluidFunction');
 
 const Analyzer = {
-  analyzeFileData: (data) => {
+  getAllFluidFunctions: (data) => {
     try {
       const fluidRegex = /{{\s*@(\S*)\s*(\S*)?\s*'(\S*)'\s*}}/g;
       let fluidTokens = fluidRegex.exec(data);

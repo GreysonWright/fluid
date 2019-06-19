@@ -13,7 +13,7 @@ const isFluidFile = (fileName) => {
   return isValidFluidFile;
 };
 
-const FileFinder = {
+const Indexer = {
   getAllFluidFiles: (directory) => {
     let files = fs.readdirSync(directory);
     const fluidFiles = new Map();
@@ -36,4 +36,4 @@ const FileFinder = {
   },
 };
 
-module.exports = FileFinder;
+module.exports = Indexer;
