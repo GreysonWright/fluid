@@ -1,6 +1,5 @@
 import { FluidFunction } from "./FluidFunction";
 import * as functionRunners from "./function-runners";
-import { stringify } from "querystring";
 
 export const execute = (fluidFunction: FluidFunction, fileData: string, params: any) => {
   switch (fluidFunction.name) {
