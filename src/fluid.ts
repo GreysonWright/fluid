@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import { analyzer, executor, indexer, Preprocessor } from './core/core';
 
@@ -13,10 +14,11 @@ export const build = (params: string[]) => {
   const preprocessor = new Preprocessor();
   const processedFiles = preprocessor.processFiles(fileIndex);
   processedFiles.forEach((file) => {
-    const filePath = path.join(workingDirectory, file.name);
-    const fluidFunctions = analyzer.getAllFluidFunctions(filePath);
+    const fileData = fs.readFileSync(file.name, 'utf8');
+    const fluidFunctions = analyzer.getAllFluidFunctions(fileData);
     fluidFunctions.forEach((fluidFunction) => {
-      executor.execute(fluidFunction);
-    })
+      const completeData = executor.execute(fluidFunction, fileData, { referenceFilePath: file.name });
+      fs.writeFileSync(file.name, completeData);
+    });
   });
 };

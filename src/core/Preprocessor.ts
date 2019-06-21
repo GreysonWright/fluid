@@ -45,7 +45,7 @@ export class Preprocessor {
       }
       return this.process({ file, filePath });
     })
-    const rank = childrenRanks.reduce((left, right) => left + right + 1);
+    const rank = childrenRanks.reduce((left, right) => left + right, 1);
     return rank;
   }
 

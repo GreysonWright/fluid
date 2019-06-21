@@ -19,6 +19,6 @@ export const getAllFluidFunctions = (data: string): FluidFunction[] => {
 };
 
 export const getAllIncludedFileNames = (data: string): string[] => {
-  const filesNames = parseFluid(fluidRegex.fluidFile, data, ([, y]: [string, string]) => y);
+  const filesNames = parseFluid(fluidRegex.fluidFile, data, ([, fluidData]: [string, string]) => fluidData);
   return filesNames;
 };
