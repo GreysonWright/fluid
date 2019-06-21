@@ -1,12 +1,23 @@
 {
-  "name": "fluid",
-  "version": "0.0.1",
+  "name": "Fluid",
+  "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "src/main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'Error: no test specified' && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/southernshirt/ts-init"
+  },
+  "dependencies": {
+    "@types/jasmine": "^3.3.13",
+    "@types/node": "^12.0.3",
+    "jasmine": "^3.4.0",
+    "ts-node": "^8.2.0",
+    "typescript": "^3.5.1"
+  }
 }
