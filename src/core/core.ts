@@ -1,5 +1,5 @@
 import * as analyzer from './analyzer';
-import * as indexer from './indexer';
+import { indexer } from './indexer/indexer-core';
 import * as executor from './executor'
 import { Preprocessor } from './Preprocessor';
 

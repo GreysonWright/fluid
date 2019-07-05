@@ -1,19 +1,18 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as analyzer from './analyzer';
-import { Index } from './Index';
-import { FluidFile } from './FluidFile';
+import { FluidIndex, FluidFile } from './indexer/indexer-core';
 
 export class Preprocessor {
-  private index: Index;
-  private resolvedFiles: Index;
+  private index: FluidIndex;
+  private resolvedFiles: FluidIndex;
 
   constructor() {
-    this.index = new Index();
-    this.resolvedFiles = new Index();
+    this.index = new FluidIndex();
+    this.resolvedFiles = new FluidIndex();
   }
 
-  processFiles(index: Index) {
+  processFiles(index: FluidIndex) {
     this.index = index;
     index.foreach((file, filePath) => {
       if (!file.wasSeen) {

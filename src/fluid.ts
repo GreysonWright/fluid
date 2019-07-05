@@ -4,6 +4,7 @@ import * as path from 'path';
 import { analyzer, executor, indexer, Preprocessor } from './core/core';
 import * as configCreator from './core/config-creator';
 import { FluidError } from './FluidError';
+import { IFluidConfig } from './core/IFluidConfig';
 
 const getWorkingDirectory = (params: string[]) => {
   const [specifiedDirectory] = params;
@@ -29,19 +30,21 @@ const getProjectDirectory = (params: string[]) => {
 };
 
 export const build = (params: string[]) => {
-  // read fluid.json
+  const projectDirectory = getProjectDirectory(params);
+  const fluidConfig = path.join(projectDirectory, 'fluid.json');
+  const fluidConfigContents = fs.readFileSync(fluidConfig, 'utf8');
+  const fluidConfigJSON: IFluidConfig = JSON.parse(fluidConfigContents);
   // copy directory to output
   // pass copied files to functions
-  const projectDirectory = getProjectDirectory(params);
-  const fileIndex = indexer.getAllFluidFiles(projectDirectory);
+  const { fluidFiles, nonFluidFiles } = indexer.indexAllFiles(projectDirectory);
   const preprocessor = new Preprocessor();
-  const processedFiles = preprocessor.processFiles(fileIndex);
+  const processedFiles = preprocessor.processFiles(fluidFiles);
   processedFiles.forEach((file) => {
     const fileData = fs.readFileSync(file.name, 'utf8');
     const fluidFunctions = analyzer.getAllFluidFunctions(fileData);
     fluidFunctions.forEach((fluidFunction) => {
-      const completeData = executor.execute(fluidFunction, fileData, { referenceFilePath: file.name });
-      fs.writeFileSync(file.name, completeData);
+      const fluidResults = executor.execute(fluidFunction, fileData, { referenceFilePath: file.name });
+      fs.writeFileSync(file.name, fluidResults);
     });
   });
 };
