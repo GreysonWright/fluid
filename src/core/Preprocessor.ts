@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as analyzer from './analyzer';
 import { FluidIndex, FluidFile } from './indexer/indexer-core';
+import { FluidError } from '../FluidError';
 
 export class Preprocessor {
   private index: FluidIndex;
@@ -28,7 +29,7 @@ export class Preprocessor {
     file.wasSeen = true;
     file.isResolved = true;
     const fileData = fs.readFileSync(filePath, 'utf8');
-    const fileChildren =  analyzer.getAllIncludedFileNames(fileData);
+    const fileChildren =  analyzer.getIncludedFileNames(fileData);
     const parentDirectory = path.dirname(filePath);
     const childrenAbsolutePaths = fileChildren.map(relativeChildPath => path.resolve(parentDirectory, relativeChildPath));
     file.children = childrenAbsolutePaths;
@@ -39,16 +40,13 @@ export class Preprocessor {
   private getRanks(filePaths: string[]) {
     const childrenRanks: number[] = filePaths.map((filePath) => {
       const file = this.index.get(filePath)!;
-      if (this.isCircularDependency(file)) {
-        throw new Error(`Circular reference not allowed. ${ filePath } depends on ${ filePath }`);
+      file.shouldOutput = false;
+      if (file.isCircluarDependency()) {
+        throw new FluidError(`Circular reference not allowed in file ${ filePath }.`);
       }
       return this.process({ file, filePath });
     })
     const rank = childrenRanks.reduce((left, right) => left + right, 1);
     return rank;
-  }
-
-  private isCircularDependency(file: FluidFile) {
-    return !file.isResolved && file.isUnresolved;
   }
 }

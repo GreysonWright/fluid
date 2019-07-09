@@ -13,12 +13,18 @@ const parseFluid = (regex: RegExp, data: string, callback: Function) => {
   return fluidFunctions;
 }
 
-export const getAllFluidFunctions = (data: string): FluidFunction[] => {
+export const getFluidFunctions = (data: string): FluidFunction[] => {
   const fluidFunctions = parseFluid(fluidRegex.fluidFunction, data, (fluidTokens: []) => new FluidFunction(fluidTokens));
   return fluidFunctions;
 };
 
-export const getAllIncludedFileNames = (data: string): string[] => {
+export const getIncludedFileNames = (data: string): string[] => {
   const filesNames = parseFluid(fluidRegex.fluidFile, data, ([, fluidData]: [string, string]) => fluidData);
   return filesNames;
 };
+
+export const stripFluidFunctions = (data: string) => {
+  let index = 0;
+  const strippedData = data.replace(fluidRegex.fluidFunction, () => `{{@fluid-index=${index}}}`);
+  return strippedData;
+}

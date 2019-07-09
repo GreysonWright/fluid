@@ -5,6 +5,7 @@ export class FluidFile extends File {
   wasSeen: boolean;
   isUnresolved: boolean;
   isResolved: boolean;
+  shouldOutput: boolean;
 
   constructor(name = '', rank = 0) {
     super(name);
@@ -12,5 +13,10 @@ export class FluidFile extends File {
     this.wasSeen = false;
     this.isUnresolved = false;
     this.isResolved = false;
+    this.shouldOutput = true;
+  }
+
+  isCircluarDependency() {
+    return !this.isResolved && this.isUnresolved;
   }
 }

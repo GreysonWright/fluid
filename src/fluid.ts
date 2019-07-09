@@ -5,6 +5,9 @@ import { analyzer, executor, indexer, Preprocessor } from './core/core';
 import * as configCreator from './core/config-creator';
 import { FluidError } from './FluidError';
 import { IFluidConfig } from './core/IFluidConfig';
+import * as fluidregex from './core/fluid-regex';
+import { FluidIndex } from './core/indexer/CFluidIndex';
+import { FluidFunction } from './core/FluidFunction';
 
 const getWorkingDirectory = (params: string[]) => {
   const [specifiedDirectory] = params;
@@ -29,9 +32,30 @@ const getProjectDirectory = (params: string[]) => {
   return directory;
 };
 
+const getFluidConfig = (projectDirectory: string) => {
+  const fluidConfigPath = path.join(projectDirectory, 'fluid.json');
+  const fluidConfigContents = fs.readFileSync(fluidConfigPath, 'utf8');
+  const fluidConfig: IFluidConfig = JSON.parse(fluidConfigContents);
+  return fluidConfig;
+};
+
 const getFullExcludedPaths = (projectDirectory: string, excludedFiles: string[]) => {
   const fullPaths = excludedFiles.map((excludedFile) => path.join(projectDirectory, excludedFile));
   return fullPaths;
+};
+
+const getProcessedFiles = (fluidFiles: FluidIndex) => {
+  const preprocessor = new Preprocessor();
+  const processedFiles = preprocessor.processFiles(fluidFiles);
+  return processedFiles;
+};
+
+const getFluidFunctionResults = (fluidFunctions: FluidFunction[], fileData: string, fileName: string) => {
+  const fluidFunctionResults = fluidFunctions.map((fluidFunction) => {
+    const fluidResults = executor.execute(fluidFunction, fileData, { referenceFilePath: fileName });
+    return fluidResults;
+  });
+  return fluidFunctionResults;
 };
 
 const getOutputPath = (filePath: string, fluidConfig: IFluidConfig, projectDirectory: string) => {
@@ -41,43 +65,36 @@ const getOutputPath = (filePath: string, fluidConfig: IFluidConfig, projectDirec
   return outputFilePath;
 };
 
+const writeFileData = (outputFilePath: string, modifiedFluidData: string) => {
+  const parentDirectory = path.dirname(outputFilePath);
+  if (!fs.existsSync(parentDirectory)) {
+    fs.mkdirSync(parentDirectory, { recursive: true });
+  }
+  fs.writeFileSync(outputFilePath, modifiedFluidData);
+};
+
 export const build = (params: string[]) => {
   const projectDirectory = getProjectDirectory(params);
-
-  const fluidConfig = path.join(projectDirectory, 'fluid.json');
-  const fluidConfigContents = fs.readFileSync(fluidConfig, 'utf8');
-  const fluidConfigJSON: IFluidConfig = JSON.parse(fluidConfigContents);
-
-  const sourceDirectory = path.join(projectDirectory, fluidConfigJSON.src_dir);
-
-  const fullExcludedPaths = getFullExcludedPaths(projectDirectory, fluidConfigJSON.exclude);
-
+  const fluidConfig = getFluidConfig(projectDirectory);
+  const sourceDirectory = path.join(projectDirectory, fluidConfig.src_dir);
+  const fullExcludedPaths = getFullExcludedPaths(projectDirectory, fluidConfig.exclude);
   const { fluidFiles, nonFluidFiles } = indexer.indexAllFiles(sourceDirectory, fullExcludedPaths);
-  const preprocessor = new Preprocessor();
-  const processedFiles = preprocessor.processFiles(fluidFiles);
+  const processedFiles = getProcessedFiles(fluidFiles);
 
   processedFiles.forEach((file) => {
     const fileData = fs.readFileSync(file.name, 'utf8');
-    const fluidFunctions = analyzer.getAllFluidFunctions(fileData);
-    fluidFunctions.forEach((fluidFunction) => { // this stuff doesn't work right
-      const fluidResults = executor.execute(fluidFunction, fileData, { referenceFilePath: file.name });
-      const outputFilePath = getOutputPath(file.name, fluidConfigJSON, projectDirectory);
-      const parentDirectory = path.dirname(outputFilePath);
-      if (!fs.existsSync(parentDirectory)) {
-        fs.mkdirSync(parentDirectory, { recursive: true });
-        fs.writeFileSync(outputFilePath, fluidResults);
-      }
-    });
+    const fluidFunctions = analyzer.getFluidFunctions(fileData);
+    const strippedFluidData = analyzer.stripFluidFunctions(fileData);
+    const fluidFunctionResults = getFluidFunctionResults(fluidFunctions, fileData, file.name);
+    const modifiedFluidData = strippedFluidData.replace(fluidregex.index, (_, index) => fluidFunctionResults[index]);
+    const outputFilePath = getOutputPath(file.name, fluidConfig, projectDirectory);
+    writeFileData(outputFilePath, modifiedFluidData);
   });
 
   nonFluidFiles.foreach((_, filePath) => {
     const fileData = fs.readFileSync(filePath, 'utf8');
-    const outputFilePath = getOutputPath(filePath, fluidConfigJSON, projectDirectory);
-    const parentDirectory = path.dirname(outputFilePath);
-    if (!fs.existsSync(parentDirectory)) {
-      fs.mkdirSync(parentDirectory, { recursive: true });
-      fs.writeFileSync(outputFilePath, fileData);
-    }
+    const outputFilePath = getOutputPath(filePath, fluidConfig, projectDirectory);
+    writeFileData(outputFilePath, fileData);
   });
 };
 
