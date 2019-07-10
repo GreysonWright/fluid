@@ -8,6 +8,7 @@ import { IFluidConfig } from './core/IFluidConfig';
 import * as fluidregex from './core/fluid-regex';
 import { FluidIndex } from './core/indexer/CFluidIndex';
 import { FluidFunction } from './core/FluidFunction';
+import { FileCache } from './core/file-cache/core';
 
 const getWorkingDirectory = (params: string[]) => {
   const [specifiedDirectory] = params;
@@ -80,15 +81,23 @@ export const build = (params: string[]) => {
   const fullExcludedPaths = getFullExcludedPaths(projectDirectory, fluidConfig.exclude);
   const { fluidFiles, nonFluidFiles } = indexer.indexAllFiles(sourceDirectory, fullExcludedPaths);
   const processedFiles = getProcessedFiles(fluidFiles);
+  const fileCache = FileCache.shared();
 
   processedFiles.forEach((file) => {
-    const fileData = fs.readFileSync(file.name, 'utf8');
+    if (!fileCache.has(file.name)) {
+      const fileData = fs.readFileSync(file.name, 'utf8');
+      fileCache.set(file.name, fileData);
+    }
+    const fileData = fileCache.get(file.name)!;
     const fluidFunctions = analyzer.getFluidFunctions(fileData);
     const strippedFluidData = analyzer.stripFluidFunctions(fileData);
     const fluidFunctionResults = getFluidFunctionResults(fluidFunctions, fileData, file.name);
     const modifiedFluidData = strippedFluidData.replace(fluidregex.index, (_, index) => fluidFunctionResults[index]);
-    const outputFilePath = getOutputPath(file.name, fluidConfig, projectDirectory);
-    writeFileData(outputFilePath, modifiedFluidData);
+    fileCache.set(file.name, modifiedFluidData);
+    if (file.shouldOutput) {
+      const outputFilePath = getOutputPath(file.name, fluidConfig, projectDirectory);
+      writeFileData(outputFilePath, modifiedFluidData);
+    }
   });
 
   nonFluidFiles.foreach((_, filePath) => {
