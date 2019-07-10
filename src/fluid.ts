@@ -5,9 +5,7 @@ import { analyzer, executor, indexer, Preprocessor } from './core/core';
 import * as configCreator from './core/config-creator';
 import { FluidError } from './FluidError';
 import { IFluidConfig } from './core/IFluidConfig';
-import * as fluidregex from './core/fluid-regex';
 import { FluidIndex } from './core/indexer/CFluidIndex';
-import { FluidFunction } from './core/FluidFunction';
 import { FileCache } from './core/file-cache/core';
 
 const getWorkingDirectory = (params: string[]) => {
@@ -51,14 +49,6 @@ const getProcessedFiles = (fluidFiles: FluidIndex) => {
   return processedFiles;
 };
 
-const getFluidFunctionResults = (fluidFunctions: FluidFunction[], fileData: string, fileName: string) => {
-  const fluidFunctionResults = fluidFunctions.map((fluidFunction) => {
-    const fluidResults = executor.execute(fluidFunction, fileData, { referenceFilePath: fileName });
-    return fluidResults;
-  });
-  return fluidFunctionResults;
-};
-
 const getOutputPath = (filePath: string, fluidConfig: IFluidConfig, projectDirectory: string) => {
   const srcPath = path.join(projectDirectory, fluidConfig.src_dir);
   const outPath = path.join(projectDirectory, fluidConfig.output_dir);
@@ -88,14 +78,16 @@ export const build = (params: string[]) => {
       const fileData = fs.readFileSync(file.name, 'utf8');
       fileCache.set(file.name, fileData);
     }
-    const fileData = fileCache.get(file.name)!;
+    let fileData = fileCache.get(file.name)!;
     const fluidFunctions = analyzer.getFluidFunctions(fileData);
-    const strippedFluidData = analyzer.stripFluidFunctions(fileData);
-    const fluidFunctionResults = getFluidFunctionResults(fluidFunctions, fileData, file.name);
-    const modifiedFluidData = strippedFluidData.replace(fluidregex.index, (_, index) => fluidFunctionResults[index]);
-    fileCache.set(file.name, modifiedFluidData);
+    fluidFunctions.forEach((fluidFunction) => {
+      fileData = fileCache.get(file.name)!;
+      const fluidResults = executor.execute(fluidFunction, fileData, { fluidFile: file, referenceFilePath: file.name });
+      fileCache.set(file.name, fluidResults);
+    })
     if (file.shouldOutput) {
       const outputFilePath = getOutputPath(file.name, fluidConfig, projectDirectory);
+      const modifiedFluidData = fileCache.get(file.name)!;
       writeFileData(outputFilePath, modifiedFluidData);
     }
   });

@@ -13,7 +13,7 @@ export class FluidFile extends File {
     this.wasSeen = false;
     this.isUnresolved = false;
     this.isResolved = false;
-    this.shouldOutput = true;
+    this.shouldOutput = false;
   }
 
   isCircluarDependency() {

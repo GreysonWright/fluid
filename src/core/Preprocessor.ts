@@ -25,7 +25,6 @@ export class Preprocessor {
   private getRanks(filePaths: string[]) {
     const childrenRanks: number[] = filePaths.map((filePath) => {
       const file = this.index.get(filePath)!;
-      file.shouldOutput = false;
       if (file.isCircluarDependency()) {
         throw new FluidError(`Circular reference not allowed in file '${filePath}'.`);
       }

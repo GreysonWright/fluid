@@ -1,8 +1,8 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as fluidRegex from './fluid-regex';
 import { FluidFunction } from './FluidFunction';
 import { FileCache } from './file-cache/core';
+import { IExecutorParameters } from './IExecutorParameters';
 
 const resolveRelativePath = (relativePath: string, referenceFilePath: string) => {
   const enclosingDirectory = path.dirname(referenceFilePath);
@@ -10,7 +10,13 @@ const resolveRelativePath = (relativePath: string, referenceFilePath: string) =>
   return fullPath;
 };
 
-export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, { referenceFilePath }: { referenceFilePath: string }) => {
+export const declareModule = (fluidFunction: FluidFunction, fileData: string, { fluidFile }: IExecutorParameters) => {
+  const modifiedFileData = fileData.replace(fluidRegex.fluidFunction, '');
+  fluidFile.shouldOutput = true;
+  return modifiedFileData;
+};
+
+export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, { referenceFilePath }: IExecutorParameters) => {
   const [ injectorFilePath ] = fluidFunction.parameters;
   const injectorFullFilePath = resolveRelativePath(injectorFilePath, referenceFilePath);
   const fileCache = FileCache.shared();
@@ -19,6 +25,6 @@ export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, {
   return injectedFileData;
 };
 
-export const override = (fluidFunction: FluidFunction, injecteeFileData: string) => {
+export const override = (fluidFunction: FluidFunction, fileData: string) => {
   throw new Error('Not implemented.')
 };
