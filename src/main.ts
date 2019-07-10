@@ -3,7 +3,7 @@ import * as cli from './cli/cli';
 export class Main {
   run() {
     try {
-      const [,commandText, ...params] = ['fluid', 'build', '/Users/greyson/Desktop/someproj 2/']; // process.argv;
+      const [,commandText, ...params] = process.argv;
       const command = cli.interpret(commandText);
       command(params);
       return 1;
