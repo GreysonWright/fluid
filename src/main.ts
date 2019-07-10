@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as cli from './cli/cli';
 
 export class Main {

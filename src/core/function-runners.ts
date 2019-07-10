@@ -3,6 +3,7 @@ import * as fluidRegex from './fluid-regex';
 import { FluidFunction } from './FluidFunction';
 import { FileCache } from './file-cache/core';
 import { IExecutorParameters } from './IExecutorParameters';
+import { FluidError } from '../FluidError';
 
 const resolveRelativePath = (relativePath: string, referenceFilePath: string) => {
   const enclosingDirectory = path.dirname(referenceFilePath);
@@ -26,5 +27,5 @@ export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, {
 };
 
 export const override = (fluidFunction: FluidFunction, fileData: string) => {
-  throw new Error('Not implemented.')
+  throw new FluidError('Not implemented.')
 };

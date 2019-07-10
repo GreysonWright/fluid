@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "description": "",
   "main": "src/main.ts",
+  "bin": {
+    "fluid": "bin/main.js"
+  },
   "scripts": {
     "test": "echo 'Error: no test specified' && exit 1"
   },
@@ -12,6 +15,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/southernshirt/fluid"
+  },
+  "engines": {
+    "node": ">=12.1.0"
   },
   "dependencies": {
     "@types/jasmine": "^3.3.13",
