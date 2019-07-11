@@ -28,6 +28,10 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
 
 
 ## Release History
+* 0.2.7
+    * Updated readme
+* 0.2.6
+    * Fixed problem caused by npm using the .gitignore file and not fetching the bin/ directory
 * 0.2.5
     * Updated package.json versioning
 * 0.2.4
