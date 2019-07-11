@@ -1,5 +1,5 @@
 # Product Name
-> Please note that fluid is in its early stages so there are probably lots of bugs.
+> Please note that fluid is in its early stages, so there are probably lots of bugs.
 
 **Commands**
  * **init** - creates fluid.json in current directory
