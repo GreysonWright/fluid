@@ -28,6 +28,10 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
 
 
 ## Release History
+* 0.2.9
+    * Updated readme
+* 0.2.8
+    * Fixed package.json
 * 0.2.7
     * Updated readme
 * 0.2.6
