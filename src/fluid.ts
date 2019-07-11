@@ -50,11 +50,16 @@ const getProcessedFiles = (fluidFiles: FluidIndex) => {
 };
 
 const getOutputPath = (filePath: string, fluidConfig: IFluidConfig, projectDirectory: string) => {
-  const srcPath = path.join(projectDirectory, fluidConfig.src_dir);
+  const srcPath = path.join(projectDirectory, fluidConfig.src_dir)
   const outPath = path.join(projectDirectory, fluidConfig.output_dir);
   const outputFilePath = filePath.replace(srcPath, outPath);
   return outputFilePath;
 };
+
+  const getCorrectFileExtension = (filePath: string) => {
+    const correctFileExtension = filePath.replace(/\.f(\S*)/, '.$1')
+    return correctFileExtension;
+  };
 
 const writeFileData = (outputFilePath: string, modifiedFluidData: string) => {
   const parentDirectory = path.dirname(outputFilePath);
@@ -87,8 +92,9 @@ export const build = (params: string[]) => {
     })
     if (file.shouldOutput) {
       const outputFilePath = getOutputPath(file.name, fluidConfig, projectDirectory);
+      const finalOutputFilePath = getCorrectFileExtension(outputFilePath);
       const modifiedFluidData = fileCache.get(file.name)!;
-      writeFileData(outputFilePath, modifiedFluidData);
+      writeFileData(finalOutputFilePath, modifiedFluidData);
     }
   });
 

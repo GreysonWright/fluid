@@ -22,28 +22,21 @@ Takes no parameters. All files including this function will be written to the ou
 `{{ @export-module }}`
 
 #### inject
-Takes the relative file path of a fluid file. Replaces the function statement with the specified file contents. Only fluid files (*.fjson, .fjs, .fts, .fcss, .fcscc, .fliquid, .fhtml*) can be referenced at this time. 
+Takes the relative file path of a fluid file. Replaces the function statement with the specified file contents. Only fluid files (*.fjson, .fjs, .fts, .fcss, .fscss, .fliquid, .fhtml*) can be referenced at this time.
 
 `{{ @inject './foo.fjs' }}`
 
 
 ## Release History
-* 0.2.9
-    * Updated readme
+* 0.2.10
+    * Fixed mispelled .fscss file extension
+    * Output modules now have the correct types
 * 0.2.8
     * Fixed package.json
-* 0.2.7
-    * Updated readme
 * 0.2.6
     * Fixed problem caused by npm using the .gitignore file and not fetching the bin/ directory
 * 0.2.5
     * Updated package.json versioning
-* 0.2.4
-    * Updated readme
-* 0.2.3
-    * Fixed npm readme
-* 0.2.2
-    * Attempted to add readme to npm
 * 0.2.1
     * Removed unimplemented fluid function
 * 0.2.0

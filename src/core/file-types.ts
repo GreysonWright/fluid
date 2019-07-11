@@ -1,6 +1,6 @@
 import * as path from 'path'
 
-export const fluidFileTypes = ['.fjson', '.fjs', '.fts', '.fcss', '.fcscc', '.fliquid', '.fhtml'];
+export const fluidFileTypes = ['.fjson', '.fjs', '.fts', '.fcss', '.fscss', '.fliquid', '.fhtml'];
 
 export const isFluidFile = (fileName: string) => {
   const fileExtension = path.extname(fileName);
