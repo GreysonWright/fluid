@@ -24,8 +24,4 @@ export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, {
   const injectorFileData = fileCache.get(injectorFullFilePath)!;
   const injectedFileData = injecteeFileData.replace(fluidRegex.fluidFunction, injectorFileData);
   return injectedFileData;
-};
-
-export const override = (fluidFunction: FluidFunction, fileData: string) => {
-  throw new FluidError('Not implemented.')
-};
+}
