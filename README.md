@@ -28,10 +28,14 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
 
 
 ## Release History
+* 0.2.4
+    * Updated Readme
+* 0.2.3
+    * Fixed npm readme
 * 0.2.2
     * Attempted to add readme to npm
 * 0.2.1
-    * Removed unimplemented fluid function 
+    * Removed unimplemented fluid function
 * 0.2.0
     * The first working release
     * Rewrite in TypeScript
