@@ -20,7 +20,7 @@
     "node": ">=12.1.0"
   },
   "dist-tags": {
-    "latest": "0.2.9"
+    "latest": "0.2.11"
   },
   "versions": [
     "0.2.10",

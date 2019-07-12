@@ -28,6 +28,8 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
 
 
 ## Release History
+* 0.2.11
+    * Started file structure refactor
 * 0.2.10
     * Fixed mispelled .fscss file extension
     * Output modules now have the correct types
