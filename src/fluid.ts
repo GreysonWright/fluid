@@ -1,12 +1,13 @@
-import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 import { analyzer, executor, Preprocessor } from './base/core';
 import * as configCreator from './base/config-manager/config-creator';
-import { FluidError } from './FluidError';
 import { IFluidConfig } from './base/config-manager/IFluidConfig';
 import { FluidIndex, indexer } from './base/indexer/core';
 import { FileCache } from './base/file-cache/core';
+import { ConfigReader } from './base/config-manager/core';
+
+let fluidConfig: IFluidConfig;
 
 const getWorkingDirectory = (params: string[]) => {
   const [specifiedDirectory] = params;
@@ -14,33 +15,10 @@ const getWorkingDirectory = (params: string[]) => {
   return specifiedDirectory || currentDirectory;
 };
 
-const doesContainFluidConfig = (directory: string) => {
-  const fluidConfigPath = path.join(directory, 'fluid.json');
-  return fs.existsSync(fluidConfigPath);
-};
-
-const getProjectDirectory = (params: string[]) => {
-  const workingDirectory = getWorkingDirectory(params);
-  let directory = workingDirectory;
-  while (!doesContainFluidConfig(directory)) {
-    if (directory === os.homedir()) {
-      throw new FluidError('Could not find the project directory. Did you run fluid init?');
-    }
-    directory = path.dirname(directory);
-  }
-  return directory;
-};
-
-const getFluidConfig = (projectDirectory: string) => {
-  const fluidConfigPath = path.join(projectDirectory, 'fluid.json');
-  const fluidConfigContents = fs.readFileSync(fluidConfigPath, 'utf8');
-  const fluidConfig: IFluidConfig = JSON.parse(fluidConfigContents);
-  return fluidConfig;
-};
-
-const getFullExcludedPaths = (projectDirectory: string, excludedFiles: string[]) => {
-  const fullPaths = excludedFiles.map((excludedFile) => path.join(projectDirectory, excludedFile));
-  return fullPaths;
+const getFluidConfig = (workingDirectory: string) => {
+  const configReader = new ConfigReader(workingDirectory);
+  const config = configReader.getFluidConfig();
+  return config;
 };
 
 const getProcessedFiles = (fluidFiles: FluidIndex) => {
@@ -49,19 +27,21 @@ const getProcessedFiles = (fluidFiles: FluidIndex) => {
   return processedFiles;
 };
 
-const getOutputPath = (filePath: string, fluidConfig: IFluidConfig, projectDirectory: string) => {
-  const srcPath = path.join(projectDirectory, fluidConfig.src_dir)
-  const outPath = path.join(projectDirectory, fluidConfig.output_dir);
-  const outputFilePath = filePath.replace(srcPath, outPath);
-  return outputFilePath;
+const getCorrectFileExtension = (filePath: string) => {
+  const correctFileExtension = filePath.replace(/\.f(\S*)/, '.$1')
+  return correctFileExtension;
 };
 
-  const getCorrectFileExtension = (filePath: string) => {
-    const correctFileExtension = filePath.replace(/\.f(\S*)/, '.$1')
-    return correctFileExtension;
-  };
+const getOutputPath = (filePath: string, fluidConfig: IFluidConfig) => {
+  const srcPath = fluidConfig.src_dir;
+  const outPath = fluidConfig.output_dir;
+  const outputFilePath = filePath.replace(srcPath, outPath);
+  const correctedExtension = getCorrectFileExtension(outputFilePath);
+  return correctedExtension;
+};
 
-const writeFileData = (outputFilePath: string, modifiedFluidData: string) => {
+const writeFileData = (filePath: string, modifiedFluidData: string) => {
+  const outputFilePath = getOutputPath(filePath, fluidConfig);
   const parentDirectory = path.dirname(outputFilePath);
   if (!fs.existsSync(parentDirectory)) {
     fs.mkdirSync(parentDirectory, { recursive: true });
@@ -70,11 +50,10 @@ const writeFileData = (outputFilePath: string, modifiedFluidData: string) => {
 };
 
 export const build = (params: string[]) => {
-  const projectDirectory = getProjectDirectory(params);
-  const fluidConfig = getFluidConfig(projectDirectory);
-  const sourceDirectory = path.join(projectDirectory, fluidConfig.src_dir);
-  const fullExcludedPaths = getFullExcludedPaths(projectDirectory, fluidConfig.exclude);
-  const { fluidFiles, nonFluidFiles } = indexer.indexAllFiles(sourceDirectory, fullExcludedPaths);
+  const workingDirectory = getWorkingDirectory(params);
+  fluidConfig = getFluidConfig(workingDirectory);
+  const { src_dir, exclude } = fluidConfig;
+  const { fluidFiles, nonFluidFiles } = indexer.indexAllFiles(src_dir, exclude);
   const processedFiles = getProcessedFiles(fluidFiles);
   const fileCache = FileCache.shared();
 
@@ -91,17 +70,14 @@ export const build = (params: string[]) => {
       fileCache.set(file.name, fluidResults);
     })
     if (file.shouldOutput) {
-      const outputFilePath = getOutputPath(file.name, fluidConfig, projectDirectory);
-      const finalOutputFilePath = getCorrectFileExtension(outputFilePath);
       const modifiedFluidData = fileCache.get(file.name)!;
-      writeFileData(finalOutputFilePath, modifiedFluidData);
+      writeFileData(file.name, modifiedFluidData);
     }
   });
 
   nonFluidFiles.foreach((_, filePath) => {
     const fileData = fs.readFileSync(filePath, 'utf8');
-    const outputFilePath = getOutputPath(filePath, fluidConfig, projectDirectory);
-    writeFileData(outputFilePath, fileData);
+    writeFileData(filePath, fileData);
   });
 };
 

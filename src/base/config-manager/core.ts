@@ -1,11 +1,9 @@
 import { createConfig } from './config-creator';
-import { readConfig } from './config-reader';
-import { config }  from './config-template';
+import { ConfigReader } from './config-reader';
 import { IFluidConfig } from './IFluidConfig';
 
 export {
   createConfig,
-  readConfig,
-  config,
+  ConfigReader,
   IFluidConfig,
 }

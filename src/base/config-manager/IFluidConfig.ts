@@ -1,5 +1,5 @@
 export interface IFluidConfig {
-  src_dir: 'src';
-  output_dir: 'bin';
-  exclude: [];
+  src_dir: string;
+  output_dir: string;
+  exclude: string[];
 }
