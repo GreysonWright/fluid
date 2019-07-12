@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { config } from './config-template';
-import { FluidError } from '../FluidError';
+import { FluidError } from '../../FluidError';
 
 export const createConfig = (workingDirectory: string) => {
   const configString = JSON.stringify(config, null, 2);

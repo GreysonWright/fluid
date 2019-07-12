@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as analyzer from './analyzer';
-import { FluidIndex, FluidFile } from './indexer/indexer-core';
-import { FluidError } from '../FluidError';
-import { isFluidFile } from './file-types';
+import * as analyzer from '../analyzer/core';
+import { FluidIndex, FluidFile } from '../indexer/core';
+import { FluidError } from '../../FluidError';
+import { isFluidFile } from '../file-types';
 
 export class Preprocessor {
   private index: FluidIndex;

@@ -1,4 +1,4 @@
-import { FluidIndex, NonFluidIndex } from './indexer-core';
+import { FluidIndex, NonFluidIndex } from './core';
 
 
 export interface IIndexerResults {

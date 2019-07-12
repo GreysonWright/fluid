@@ -1,5 +1,5 @@
-import { FluidFile} from './indexer-core';
-import { Index } from './CIndex';
+import { FluidFile} from './core';
+import { Index } from './Index';
 
 export class FluidIndex extends Index<FluidFile> {
   toRankedArray() {

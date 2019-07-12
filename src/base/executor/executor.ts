@@ -1,7 +1,7 @@
-import { FluidFunction } from "./FluidFunction";
+import { FluidFunction } from "../analyzer/FluidFunction";
 import * as functionRunners from "./function-runners";
 import { IExecutorParameters } from "./IExecutorParameters";
-import { FluidError } from "../FluidError";
+import { FluidError } from "../../FluidError";
 
 export const execute = (fluidFunction: FluidFunction, fileData: string, params: IExecutorParameters) => {
   switch (fluidFunction.name) {

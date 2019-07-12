@@ -1,5 +1,4 @@
-import * as analyzer from '../src/analyzer';
-import { FluidFunction } from '../src/FluidFunction';
+import * as analyzer from '../src/base/analyzer/core';
 
 describe('analyzer', () => {
 
@@ -11,7 +10,7 @@ describe('analyzer', () => {
       const func = `inject`;
       const param = 'asdf.txt';
       const data = `{{ @${ func } \'${ param }\' }}`;
-      const [ fluidFunction ]  = analyzer.getAllFluidFunctions(data);
+      const [ fluidFunction ]  = analyzer.getFluidFunctions(data);
       expect(fluidFunction.name).toBe(func);
       expect(fluidFunction.parameters).toEqual([ param ]);
     });
@@ -20,7 +19,7 @@ describe('analyzer', () => {
       const func = `override`;
       const params = ['asdf.txt', 'jkl.txt'];
       const data = `{{ @${ func } \'${ params[0] }\' \'${params[1]}\' }}`;
-      const [ fluidFunction ]  = analyzer.getAllFluidFunctions(data);
+      const [ fluidFunction ]  = analyzer.getFluidFunctions(data);
       expect(fluidFunction.name).toBe(func);
       expect(fluidFunction.parameters).toEqual(params);
     });
@@ -28,20 +27,20 @@ describe('analyzer', () => {
     it('getAllFluidFunctions invalid', () => {
       const func = `override`;
       const data = `{{ @${ func } }}`;
-      const tokens = analyzer.getAllFluidFunctions(data);
+      const tokens = analyzer.getFluidFunctions(data);
       expect(tokens.length).toBe(0);
     });
 
     it('getAllIncludedFileNames valid', () => {
       const param = 'asdf.txt';
       const data = `{{ @inject \'${ param }\' }}`;
-      const [ fileName ]  = analyzer.getAllIncludedFileNames(data);
+      const [ fileName ]  = analyzer.getIncludedFileNames(data);
       expect(fileName).toBe(param);
     });
 
     it('getAllIncludedFileNames invalid', () => {
       const data = `{{ @inject }}`;
-      const fileNames = analyzer.getAllIncludedFileNames(data);
+      const fileNames = analyzer.getIncludedFileNames(data);
       expect(fileNames.length).toBe(0);
     });
 

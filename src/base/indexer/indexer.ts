@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { FluidFile, FluidIndex, NonFluidIndex, File } from './indexer-core';
+import { FluidFile, FluidIndex, NonFluidIndex, File } from './core';
 import { IIndexerResults } from './IIndexerResults';
 import { isFluidFile } from '../file-types';
 

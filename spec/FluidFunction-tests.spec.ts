@@ -1,4 +1,4 @@
-import { FluidFunction } from '../src/FluidFunction';
+import { FluidFunction } from '../src/base/analyzer/core';
 
 describe('FluidFunction', () => {
     beforeEach(() => {

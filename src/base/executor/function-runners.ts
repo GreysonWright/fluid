@@ -1,9 +1,9 @@
 import * as path from 'path';
-import * as fluidRegex from './fluid-regex';
-import { FluidFunction } from './FluidFunction';
-import { FileCache } from './file-cache/core';
+import * as fluidRegex from '../fluid-regex';
+import { FluidFunction } from '../analyzer/core';
+import { FileCache } from '../file-cache/core';
 import { IExecutorParameters } from './IExecutorParameters';
-import { FluidError } from '../FluidError';
+import { FluidError } from '../../FluidError';
 
 const resolveRelativePath = (relativePath: string, referenceFilePath: string) => {
   const enclosingDirectory = path.dirname(referenceFilePath);

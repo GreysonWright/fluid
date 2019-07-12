@@ -1,12 +1,12 @@
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
-import { analyzer, executor, indexer, Preprocessor } from './core/core';
-import * as configCreator from './core/config-creator';
+import { analyzer, executor, Preprocessor } from './base/core';
+import * as configCreator from './base/config-manager/config-creator';
 import { FluidError } from './FluidError';
-import { IFluidConfig } from './core/IFluidConfig';
-import { FluidIndex } from './core/indexer/CFluidIndex';
-import { FileCache } from './core/file-cache/core';
+import { IFluidConfig } from './base/config-manager/IFluidConfig';
+import { FluidIndex, indexer } from './base/indexer/core';
+import { FileCache } from './base/file-cache/core';
 
 const getWorkingDirectory = (params: string[]) => {
   const [specifiedDirectory] = params;

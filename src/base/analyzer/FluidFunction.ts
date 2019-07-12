@@ -1,4 +1,4 @@
-import { FluidError } from "../FluidError";
+import { FluidError } from "../../FluidError";
 
 export class FluidFunction {
   name: string;

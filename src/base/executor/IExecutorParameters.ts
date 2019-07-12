@@ -1,4 +1,4 @@
-import { FluidFile } from "./indexer/CFluidFile";
+import { FluidFile } from "../indexer/core";
 
 export interface IExecutorParameters {
   referenceFilePath: string;

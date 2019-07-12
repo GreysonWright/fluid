@@ -1,4 +1,4 @@
-import { File } from './indexer-core';
+import { File } from './core';
 
 export class Index<T extends File> {
   store: Map<string, T>;

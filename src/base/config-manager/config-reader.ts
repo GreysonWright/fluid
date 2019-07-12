@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { FluidError } from '../FluidError';
+import { FluidError } from '../../FluidError';
 
 export const readConfig = (projectDirectory: string) => {
   const configPath = path.join(projectDirectory, 'fluid.json');

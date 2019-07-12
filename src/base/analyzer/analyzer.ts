@@ -1,5 +1,5 @@
 import { FluidFunction } from './FluidFunction';
-import * as fluidRegex from './fluid-regex';
+import * as fluidRegex from '../fluid-regex';
 
 const parseFluid = (regex: RegExp, data: string, callback: Function) => {
   let fluidTokens: string[] = regex.exec(data)!;
