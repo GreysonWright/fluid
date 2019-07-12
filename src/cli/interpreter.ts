@@ -1,4 +1,4 @@
-import * as fluid from '../fluid';
+import * as fluid from './fluid';
 import { FluidError } from '../FluidError';
 
 export const interpret = (command: string) => {

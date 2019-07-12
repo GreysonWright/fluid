@@ -3,7 +3,6 @@ import * as fluidRegex from '../fluid-regex';
 import { FluidFunction } from '../analyzer/core';
 import { FileCache } from '../file-cache/core';
 import { IExecutorParameters } from './IExecutorParameters';
-import { FluidError } from '../../FluidError';
 
 const resolveRelativePath = (relativePath: string, referenceFilePath: string) => {
   const enclosingDirectory = path.dirname(referenceFilePath);
