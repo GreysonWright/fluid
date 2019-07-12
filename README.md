@@ -26,7 +26,6 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
 
 `{{ @inject './foo.fjs' }}`
 
-
 ## Release History
 * 0.2.12
     * Refactored file structure
