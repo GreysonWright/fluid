@@ -27,6 +27,8 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
 `{{ @inject './foo.fjs' }}`
 
 ## Release History
+* 0.2.13
+    * Small refactor
 * 0.2.12
     * Refactored file structure
     * Broke fluid.ts into CommandRunners
