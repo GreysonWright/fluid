@@ -12,9 +12,9 @@ const resolveRelativePath = (relativePath: string, referenceFilePath: string) =>
 
 export const exportModule = (fluidFunction: FluidFunction, fileData: string, { fluidFile }: IExecutorParameters) => {
   const modifiedFileData = fileData.replace(fluidRegex.fluidFunction, '');
-  const finalFileData = modifiedFileData.trim();
+  const finalModifiedFileData = modifiedFileData.trimStart();
   fluidFile.shouldOutput = true;
-  return finalFileData;
+  return finalModifiedFileData;
 };
 
 export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, { referenceFilePath }: IExecutorParameters) => {
