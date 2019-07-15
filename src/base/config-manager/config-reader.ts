@@ -20,7 +20,7 @@ export class ConfigReader {
     let directory = workingDirectory;
     while (!this.doesContainFluidConfig(directory)) {
       if (directory === os.homedir()) {
-        throw new FluidError('Could not find the project directory. Did you run fluid init?');
+        throw new FluidError('Could not find the project directory. Did you run \'fluid init\'?');
       }
       directory = path.dirname(directory);
     }
