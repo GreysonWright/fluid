@@ -5,7 +5,7 @@ import { logger } from './util/core';
 export class Main {
   run() {
     try {
-      const [,,commandText, ...params] = ['', '', 'build', '/Users/greyson/Desktop/someproj'];// process.argv;
+      const [,,commandText, ...params] = process.argv;
       const command = cli.interpret(commandText);
       command(params);
       return 1;
