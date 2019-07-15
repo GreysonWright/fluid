@@ -6,6 +6,7 @@ import { analyzer, executor, Preprocessor, indexer, FluidIndex, FileCache, IFlui
 
 export class Build extends CommandRunner implements ICommandRunner {
   fluidConfig: IFluidConfig;
+  writtenFiles: Map<string, boolean>;
 
   private getFluidConfig() {
     const configReader = new ConfigReader(this.workingDirectory);
@@ -16,6 +17,7 @@ export class Build extends CommandRunner implements ICommandRunner {
   constructor(params: string[]) {
     super(params);
     this.fluidConfig = this.getFluidConfig();
+    this.writtenFiles = new Map<string, boolean>();
   }
 
   private getProcessedFiles(fluidFiles: FluidIndex) {
@@ -43,33 +45,34 @@ export class Build extends CommandRunner implements ICommandRunner {
     if (!fs.existsSync(parentDirectory)) {
       fs.mkdirSync(parentDirectory, { recursive: true });
     }
-    fs.writeFileSync(outputFilePath, modifiedFluidData);
+    if (!this.writtenFiles.has(outputFilePath)) {
+      fs.writeFileSync(outputFilePath, modifiedFluidData);
+      this.writtenFiles.set(outputFilePath, true);
+    } else {
+      console.warn(`File conflict! The exported file at '${outputFilePath}' already exists and will not be overwitten.`);
+    }
   }
 
   execute() {
     const { src_dir, exclude } = this.fluidConfig;
     const { fluidFiles, nonFluidFiles } = indexer.indexAllFiles(src_dir, exclude);
     const processedFiles = this.getProcessedFiles(fluidFiles);
-    const fileCache = FileCache.shared();
+    const fluidFileCache = FileCache.shared();
 
     processedFiles.forEach((file) => {
-      if (!fileCache.has(file.name)) {
+      if (!fluidFileCache.has(file.name)) {
         const fileData = fs.readFileSync(file.name, 'utf8');
-        fileCache.set(file.name, fileData);
+        fluidFileCache.set(file.name, fileData);
       }
-      let fileData = fileCache.get(file.name)!;
+      let fileData = fluidFileCache.get(file.name)!;
       const fluidFunctions = analyzer.getFluidFunctions(fileData);
       fluidFunctions.forEach((fluidFunction) => {
-        fileData = fileCache.get(file.name)!;
+        fileData = fluidFileCache.get(file.name)!;
         const fluidResults = executor.execute(fluidFunction, fileData, { fluidFile: file, referenceFilePath: file.name });
-        fileCache.set(file.name, fluidResults);
+        fluidFileCache.set(file.name, fluidResults);
       })
       if (file.shouldOutput) {
-        // ****
-        // check filecache maybe?
-        console.warn('Check if is written by fluid function');
-        // ****
-        const modifiedFluidData = fileCache.get(file.name)!;
+        const modifiedFluidData = fluidFileCache.get(file.name)!;
         this.writeFileData(file.name, modifiedFluidData);
       }
     });
