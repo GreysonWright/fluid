@@ -2,10 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { CommandRunner } from './CommandRunner';
 import { ICommandRunner } from './ICommandRunner';
-import { IFluidConfig, ConfigReader } from '../../base/config-manager/core';
-import { analyzer, executor, Preprocessor, indexer } from '../../base/core';
-import { FluidIndex } from '../../base/indexer/core';
-import { FileCache } from '../../base/file-cache/core';
+import { analyzer, executor, Preprocessor, indexer, FluidIndex, FileCache, IFluidConfig, ConfigReader } from '../../base/core';
 
 export class Build extends CommandRunner implements ICommandRunner {
   fluidConfig: IFluidConfig;
