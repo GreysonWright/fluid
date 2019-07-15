@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { CommandRunner } from './CommandRunner';
 import { ICommandRunner } from './ICommandRunner';
 import { analyzer, executor, Preprocessor, indexer, FluidIndex, FileCache, IFluidConfig, ConfigReader } from '../../base/core';
+import { logger } from '../../util/core';
 
 export class Build extends CommandRunner implements ICommandRunner {
   fluidConfig: IFluidConfig;
@@ -49,7 +50,7 @@ export class Build extends CommandRunner implements ICommandRunner {
       fs.writeFileSync(outputFilePath, modifiedFluidData);
       this.writtenFiles.set(outputFilePath, true);
     } else {
-      console.warn(`File conflict! The exported file at '${outputFilePath}' already exists and will not be overwitten.`);
+      logger.warn(`File conflict! The exported file at '${outputFilePath}' already exists and will not be overwitten.`);
     }
   }
 
