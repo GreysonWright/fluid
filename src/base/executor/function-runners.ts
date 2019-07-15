@@ -10,10 +10,11 @@ const resolveRelativePath = (relativePath: string, referenceFilePath: string) =>
   return fullPath;
 };
 
-export const declareModule = (fluidFunction: FluidFunction, fileData: string, { fluidFile }: IExecutorParameters) => {
+export const exportModule = (fluidFunction: FluidFunction, fileData: string, { fluidFile }: IExecutorParameters) => {
   const modifiedFileData = fileData.replace(fluidRegex.fluidFunction, '');
+  const finalFileData = modifiedFileData.trim();
   fluidFile.shouldOutput = true;
-  return modifiedFileData;
+  return finalFileData;
 };
 
 export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, { referenceFilePath }: IExecutorParameters) => {
@@ -21,6 +22,7 @@ export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, {
   const injectorFullFilePath = resolveRelativePath(injectorFilePath, referenceFilePath);
   const fileCache = FileCache.shared();
   const injectorFileData = fileCache.get(injectorFullFilePath)!;
-  const injectedFileData = injecteeFileData.replace(fluidRegex.fluidFunction, injectorFileData);
+  const trimmedInjectorFileData = injectorFileData.trim();
+  const injectedFileData = injecteeFileData.replace(fluidRegex.fluidFunction, trimmedInjectorFileData);
   return injectedFileData;
 }
