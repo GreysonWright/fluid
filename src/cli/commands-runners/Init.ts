@@ -1,14 +1,9 @@
 import { ICommandRunner } from './ICommandRunner';
 import { createConfig } from '../../base/config-manager/core';
+import { CommandRunner } from './CommandRunner';
 
-export class Init implements ICommandRunner {
-  workingDirectory: string;
-  constructor(workingDirectory: string) {
-    this.workingDirectory = workingDirectory;
-  }
-
+export class Init extends CommandRunner implements ICommandRunner {
   execute() {
     createConfig(this.workingDirectory);
   }
-
 }

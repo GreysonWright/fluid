@@ -1,6 +1,13 @@
-export abstract class CommandRunner {
+export class CommandRunner {
   workingDirectory: string;
-  constructor(workingDirectory: string) {
-    this.workingDirectory = workingDirectory;
+
+  getWorkingDirectory(params: string[]) {
+    const [specifiedDirectory] = params;
+    const currentDirectory = process.cwd();
+    return specifiedDirectory || currentDirectory;
+  };
+
+  constructor(params: string[]) {
+    this.workingDirectory = this.getWorkingDirectory(params);
   }
 }

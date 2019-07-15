@@ -7,15 +7,15 @@ import { analyzer, executor, Preprocessor, indexer, FluidIndex, FileCache, IFlui
 export class Build extends CommandRunner implements ICommandRunner {
   fluidConfig: IFluidConfig;
 
-  private getFluidConfig(workingDirectory: string) {
-    const configReader = new ConfigReader(workingDirectory);
+  private getFluidConfig() {
+    const configReader = new ConfigReader(this.workingDirectory);
     const config = configReader.getFluidConfig();
     return config;
   }
 
-  constructor(workingDirectory: string) {
-    super(workingDirectory);
-    this.fluidConfig = this.getFluidConfig(this.workingDirectory);
+  constructor(params: string[]) {
+    super(params);
+    this.fluidConfig = this.getFluidConfig();
   }
 
   private getProcessedFiles(fluidFiles: FluidIndex) {
