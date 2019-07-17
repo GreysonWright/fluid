@@ -29,7 +29,7 @@ export class Preprocessor {
         throw new FluidError(`Circular reference not allowed in file '${filePath}'.`);
       }
       return this.process({ file, filePath });
-    })
+    });
     const rank = childrenRanks.reduce((left, right) => left + right, 1);
     return rank;
   }
