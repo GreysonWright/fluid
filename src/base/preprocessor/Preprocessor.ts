@@ -19,7 +19,7 @@ export class Preprocessor {
       if (!fs.existsSync(filePath) || !isFluidFile(filePath)) {
         throw new FluidError(`The file at '${filePath}' does not exist or is not a valid fluid file.`);
       }
-    })
+    });
   }
 
   private getRanks(filePaths: string[]) {
