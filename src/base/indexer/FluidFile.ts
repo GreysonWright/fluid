@@ -16,7 +16,11 @@ export class FluidFile extends File {
     this.shouldOutput = false;
   }
 
+  doesReferenceSelf() {
+    return this.children.some(child => child === this.name);
+  }
+
   isCircluarDependency() {
-    return !this.isResolved && this.isUnresolved;
+    return this.doesReferenceSelf() || (!this.isResolved && this.isUnresolved);
   }
 }

@@ -26,3 +26,16 @@ export const inject = (fluidFunction: FluidFunction, injecteeFileData: string, {
   const injectedFileData = injecteeFileData.replace(fluidRegex.fluidFunction, trimmedInjectorFileData);
   return injectedFileData;
 }
+
+export const use = (fluidFunction: FluidFunction, injecteeFileData: string, { referenceFilePath }: IExecutorParameters) => {
+  const [ templateFilePath, injectorFilePath ] = fluidFunction.parameters;
+  const templateFullPath = resolveRelativePath(templateFilePath, referenceFilePath);
+  const injectorFullFilePath = resolveRelativePath(injectorFilePath, referenceFilePath);
+  const fileCache = FileCache.shared();
+  const templateFileData = fileCache.get(templateFullPath)!.trim();
+  const injectorFileData = fileCache.get(injectorFullFilePath)!.trim();
+  const replacedTemplateData = templateFileData.replace(fluidRegex.fluidTemplateContentLiteral, injectorFileData);
+  const trimmedInjectorFileData = injecteeFileData.trim();
+  const injectedFileData = trimmedInjectorFileData.replace(fluidRegex.fluidFunction, replacedTemplateData);
+  return injectedFileData;
+}

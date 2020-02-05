@@ -22,11 +22,28 @@ Takes no parameters. All files including this function will be written to the ou
 `{{ @export-module }}`
 
 #### inject
-Takes the relative file path of a fluid file. Replaces the function statement with the specified file contents. Only fluid files (*.fjson, .fjs, .fts, .fcss, .fscss, .fliquid, .fhtml*) can be referenced at this time.
+Takes the relative file path to a source fluid file. Replaces the function statement with the specified file contents. Only fluid files (*.fjson, .fjs, .fts, .fcss, .fscss, .fliquid, .fhtml*) can be referenced at this time.
 
 `{{ @inject './foo.fjs' }}`
 
+#### use
+Takes the relative file path to a template fluid file and the relative file path to a source fluid file. Replaces the occurrence of `{{ content }}` in the specified template fluid file with the contents of the specified source file, then replaces the function statement with the results of the template replacement. Only fluid files (*.fjson, .fjs, .fts, .fcss, .fscss, .fliquid, .fhtml*) can be referenced at this time.
+
+`{{ @use './some-template.fjs' 'foo.fjs' }}`
+
+The template file must include `{{ content }}`.
+In the following example, the contents of a specified fluid file will be injected into the _container-thing_ div.
+```
+<div class="container-thing">
+	{{ content }}
+</div>
+```
+
 ## Release History
+* 0.2.17
+	* Fixed bug with file including itself passed circular dependency test.
+	* Added templates
+	* Fixed bug in fluid file regex.
 * 0.2.16
     * Added logger module
     * colored warning and errors
@@ -58,6 +75,8 @@ Takes the relative file path of a fluid file. Replaces the function statement wi
     * Not really working JavaScript version
 
 ## Known Issues
+* Files included more than once may incorrectly pass the circular dependency test.
+* Templates using the inject keyword may exhibit strange behavior.
 
 ## Future Additions/Changes
 * Big refactor

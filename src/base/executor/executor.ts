@@ -9,6 +9,8 @@ export const execute = (fluidFunction: FluidFunction, fileData: string, params: 
       return functionRunners.exportModule(fluidFunction, fileData, params);
     case 'inject':
       return functionRunners.inject(fluidFunction, fileData, params);
+    case 'use':
+      return functionRunners.use(fluidFunction, fileData, params);
     default:
       throw new FluidError(`Unrecognized function '${fluidFunction.name}'`);
   }
