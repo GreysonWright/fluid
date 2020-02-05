@@ -1,6 +1,6 @@
 {
   "name": "fluid",
-  "version": "0.2.16",
+  "version": "0.3.0",
   "description": "",
   "main": "src/main.ts",
   "bin": {
