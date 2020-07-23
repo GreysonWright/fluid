@@ -1,4 +1,4 @@
-# Product Name
+# Fluid
 > Please note that fluid is in its early stages, so there are probably lots of bugs.
 
 **Commands**
